@@ -1,11 +1,17 @@
-# Maven
+# Maven target
 target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
+release.properties
 
-# IDE
+# Preservar o Maven Wrapper
+!.mvn/wrapper/maven-wrapper.jar
+!mvnw
+!mvnw.cmd
+
+# IDEs e Editores
 .idea/
 *.iml
 .vscode/
@@ -17,15 +23,17 @@ pom.xml.next
 *.log
 logs/
 
-# OS
+# Arquivos do Sistema Operacional
 .DS_Store
 Thumbs.db
 
-# Application
+# Configurações de Ambiente (Segurança)
 application-local.yml
 application-dev.yml
 application-prod.yml
+*.env
 
-# Build
+# Pacotes de Build (ignorando todos os JARs, exceto o wrapper)
 *.jar
 *.war
+*.ear
