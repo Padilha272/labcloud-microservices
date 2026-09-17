@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: auth-service
+
+  # ====== BANCO DE DADOS ======
+  datasource:
+    url: jdbc:postgresql://localhost:5433/labcloud_auth
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+    show-sql: true
+
+  # ====== JWT ======
+  security:
+    jwt:
+      secret: chave-secreta-jwt-compartilhada-entre-todos-os-servicos-labcloud-2026-esta-e-a-chave
+      expiration: 86400000  # 24 horas em ms
+
+# ====== SERVIDOR ======
+server:
+  port: 8081
+
+# ====== LOGGING ======
+logging:
+  level:
+    com.labcloud: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
