@@ -1,4 +1,4 @@
-package com.labcloud.models;
+package com.labcloud.auth.models;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.labcloud.enums.UserRole;
+import com.labcloud.auth.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,7 +56,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @Builder.Default
-    private boolean active = true;
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(updatable = false)

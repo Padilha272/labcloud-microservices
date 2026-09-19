@@ -1,10 +1,9 @@
-package com.labcloud.models;
+package com.labcloud.auth.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -52,7 +51,7 @@ public class Laboratory {
 
     @Column(nullable = false)
     @Builder.Default
-    private boolean active = true;
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(updatable = false)
