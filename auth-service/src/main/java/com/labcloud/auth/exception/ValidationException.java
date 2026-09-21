@@ -4,8 +4,8 @@ import java.util.Map;
 
 import lombok.Getter;
 
-@Getter 
-public class ValidationException extends RuntimeException{
+@Getter
+public class ValidationException extends RuntimeException {
 
     private final Map<String, String> errors;
 

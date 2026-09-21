@@ -1,8 +1,8 @@
 package com.labcloud.auth.exception;
 
-public class UnauthorizedException extends RuntimeException{
+public class UnauthorizedException extends RuntimeException {
 
-     public UnauthorizedException(String message) {
+    public UnauthorizedException(String message) {
         super(message);
     }
 
