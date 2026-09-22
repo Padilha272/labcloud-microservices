@@ -1,4 +1,4 @@
-package com.labcloud.auth.dto.response;
+package com.labcloud.auth.exception;
 
 import java.time.LocalDateTime;
 import java.util.Map;
