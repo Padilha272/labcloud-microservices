@@ -49,4 +49,15 @@ public class LaboratoryMapper {
                 .build();
     }
 
+    public void updateEntity(LaboratoryRequest request, Laboratory laboratory) {
+        if (laboratory == null || request == null) {
+            return;
+        }
+
+        laboratory.setName(request.getName());
+        laboratory.setDescription(request.getDescription());
+        laboratory.setAddress(request.getAddress());
+        laboratory.setPhone(request.getPhone());
+        laboratory.setEmail(request.getEmail());
+    }
 }
