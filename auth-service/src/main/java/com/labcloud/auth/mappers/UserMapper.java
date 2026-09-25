@@ -50,6 +50,18 @@ public class UserMapper {
 
     }
 
-    
+    public void updateEntity (UserRequest request, User user) {
+        if(request == null || user == null){
+            return ;
+        }
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+
+        if(user.getRole() != null){
+            user.setRole(request.getRole());
+        }
+        
+
+    }
     
 }
