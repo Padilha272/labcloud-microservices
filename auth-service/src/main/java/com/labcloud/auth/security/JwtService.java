@@ -25,7 +25,7 @@ public class JwtService {
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
 
-    @Value("\"${spring.security.jwt.expiration}\"")
+    @Value("${spring.security.jwt.expiration}")
     private long jwtExpiration;
 
     // Extrair dados do token

@@ -28,7 +28,7 @@ public class Laboratory {
     @ToString.Include
     private String id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 100)
     @ToString.Include
     @Setter(AccessLevel.PROTECTED)
     private String tenantId;

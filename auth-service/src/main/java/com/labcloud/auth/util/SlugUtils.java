@@ -17,13 +17,15 @@ public class SlugUtils {
             return "";
         }
 
+        //Remover acentos
         String normalized = Normalizer
                 .normalize(input, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+","");
 
+        //Converter para minúsculo, trocar espa~ps inválidos por hífen e remover hifen duplicado   
         return normalized.toLowerCase()
-                .replaceAll("","-")
-                .replaceAll("[^a-z0-9-]", "");
+                .replaceAll("[^a-z0-9-]","-")// Substitui sequências de não-alfanuméricos por um único hífen
+                .replaceAll("^-|-$", ""); // Remove hífens sobressalentes do início e do fim
 
 }
 
