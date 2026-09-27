@@ -54,10 +54,20 @@ public class LaboratoryMapper {
             return;
         }
 
-        laboratory.setName(request.getName());
-        laboratory.setDescription(request.getDescription());
-        laboratory.setAddress(request.getAddress());
-        laboratory.setPhone(request.getPhone());
-        laboratory.setEmail(request.getEmail());
+        if (request.getName() != null) {
+            laboratory.setName(request.getName());
+        }
+        if (request.getDescription() != null) {
+            laboratory.setDescription(request.getDescription());
+        }
+        if (request.getAddress() != null) {
+            laboratory.setAddress(request.getAddress());
+        }
+        if (request.getPhone() != null) {
+            laboratory.setPhone(request.getPhone());
+        }
+        if (request.getEmail() != null) {
+            laboratory.setEmail(request.getEmail());
+        }
     }
 }

@@ -24,7 +24,7 @@ public class SlugUtils {
 
         //Converter para minúsculo, trocar espa~ps inválidos por hífen e remover hifen duplicado   
         return normalized.toLowerCase()
-                .replaceAll("[^a-z0-9-]","-")// Substitui sequências de não-alfanuméricos por um único hífen
+                .replaceAll("[^a-z0-9-]+","-")// Substitui sequências de não-alfanuméricos por um único hífen
                 .replaceAll("^-|-$", ""); // Remove hífens sobressalentes do início e do fim
 
 }
