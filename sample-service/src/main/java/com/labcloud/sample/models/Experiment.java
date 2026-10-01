@@ -31,36 +31,35 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "experiments")
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Getter 
-@Setter 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Builder  
+@Builder
 public class Experiment {
 
-
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
     @ToString.Include
     @EqualsAndHashCode.Include
     private String id;
 
-    //Tenant (multi-tenancy)
+    // Tenant (multi-tenancy)
     @Column(nullable = false)
     @ToString.Include
     @Setter(AccessLevel.NONE)
     private String tenantId;
 
-    //Campos desnormalizados (refências a outros serviços)
+    // Campos desnormalizados (refências a outros serviços)
     @Column(nullable = false)
     @ToString.Include
     private String laboratoryId;
 
-    //Campos desnormalizados (refências a outros serviços)
-    @Column(nullable = false , length = 100)
+    // Campos desnormalizados (refências a outros serviços)
+    @Column(nullable = false, length = 100)
     @ToString.Include
     private String laboratoryName;
 
@@ -86,36 +85,35 @@ public class Experiment {
     @Column(columnDefinition = "TEXT")
     private String methodology;
 
-
     @Column(nullable = false)
     @ToString.Include
-    private String createdBy; //UserId
+    private String createdBy; // UserId
 
     @Column(length = 100)
     private String createdByName;
 
-    @CreationTimestamp 
+    @CreationTimestamp
     @Column(updatable = false)
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp 
+    @UpdateTimestamp
     @Setter(AccessLevel.NONE)
     private LocalDateTime updatedAt;
 
-
-    //Relacionamentos internos do sample-service - Um experimento tem várias amostras
-    @OneToMany(mappedBy = "experiment",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    // Relacionamentos internos do sample-service - Um experimento tem várias
+    // amostras
+    @OneToMany(mappedBy = "experiment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     @ToString.Include
     private List<Sample> samples = new ArrayList<>();
 
-    //Métodos auxiliares
-    public void updatedAt(String newTenantId) {
-        if(newTenantId ==null || newTenantId.trim().isEmpty()) {
+    // Métodos auxiliares
+    public void updateTenantId(String newTenantId) {
+        if (newTenantId == null || newTenantId.trim().isEmpty()) {
             throw new IllegalArgumentException("Tenant ID não pode ser vazio");
         }
-        this.tenantId=newTenantId;
+        this.tenantId = newTenantId;
     }
 
     public void complete() {
@@ -132,7 +130,5 @@ public class Experiment {
         this.status = ExperimentStatus.ACTIVE;
         this.startDate = LocalDateTime.now();
     }
-
-
 
 }
