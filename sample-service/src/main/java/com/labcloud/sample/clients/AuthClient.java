@@ -12,19 +12,15 @@ import com.labcloud.sample.dto.external.UserClientResponse;
     automaticamente essas chamadas em HTTP REST.
 */
 
-
-@FeignClient(
-        name ="auth-service",
-        url="${auth.service.url}"
-)
+@FeignClient(name = "auth-service", url = "${auth.service.url:http://localhost:8081}")
 public interface AuthClient {
 
-    //Laboratório
-    @GetMapping("/api/laboratoris/{id}")
+    // Laboratório
+    @GetMapping("/api/laboratories/{id}")
     LaboratoryClientResponse getLaboratory(@PathVariable String id);
 
-    //Usuário
+    // Usuário
     @GetMapping("/api/users/{id}")
     UserClientResponse getUser(@PathVariable String id);
-    
-} 
+
+}
