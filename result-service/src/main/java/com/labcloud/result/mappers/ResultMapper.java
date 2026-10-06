@@ -21,10 +21,13 @@ public class ResultMapper {
                 .qualityControl(request.getQualityControl()).sampleId(request.getSampleId()).build();
 
         /*
-            Alguns dados não poderão ser inseridos por aqui, como o expetimentId e o createdBy,
-            com o service, poderemos ter acesso e iremos completar as os campos que estão ausentes 
-            no momento no processo de criação da entidade.
-        */
+         * 
+         * Alguns dados não poderão ser inseridos por aqui, como o expetimentId e o
+         * createdBy,
+         * com o service, poderemos ter acesso e iremos completar as os campos que estão
+         * ausentes
+         * no momento no processo de criação da entidade.
+         */
 
     }
 
