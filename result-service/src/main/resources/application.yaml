@@ -2,13 +2,13 @@ spring:
   application:
     name: result-service
 
-datasource:
+  datasource:
     url: jdbc:postgresql://localhost:5433/labcloud_result
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
 
-jpa:
+  jpa:
     hibernate:
       ddl-auto: update
     properties:
@@ -17,13 +17,20 @@ jpa:
     open-in-view: false
     show-sql: true
 
-security:
-  jwt:
-    secret: chave-secreta-jwt-compartilhada-entre-todos-os-servicos-labcloud-2026-esta-e-a-chave
-    expiration: 86400000
+  security:
+    jwt:
+      secret: chave-secreta-jwt-compartilhada-entre-todos-os-servicos-labcloud-2026-esta-e-a-chave
+      expiration: 86400000
 
 server:
   port: 8083
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
 
 auth:
   service:

@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: result-service-test
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+    show-sql: false
+    open-in-view: false
+
+  security:
+    jwt:
+      secret: chave-secreta-jwt-para-testes-com-no-minimo-256-bits-para-funcionar-corretamente-auth
+      expiration: 86400000
+
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: false
+
+auth:
+  service:
+    url: http://localhost:8081
+
+sample:
+  service:
+    url: http://localhost:8082
+
+logging:
+  level:
+    root: WARN
+    com.labcloud: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    feign: WARN
