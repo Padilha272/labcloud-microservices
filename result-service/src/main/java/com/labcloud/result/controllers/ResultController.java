@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.labcloud.result.services.ResultService;
-import com.labcloud.result.security.*;
 import jakarta.validation.Valid;
 
+import com.labcloud.common.security.SecurityUtils;
 import com.labcloud.result.dto.request.ResultRequest;
 import com.labcloud.result.dto.response.*;
 

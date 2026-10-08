@@ -9,7 +9,8 @@ import com.labcloud.auth.models.Laboratory;
 import com.labcloud.auth.models.User;
 import com.labcloud.auth.repositories.LaboratoryRepository;
 import com.labcloud.auth.repositories.UserRepository;
-import com.labcloud.auth.security.JwtService;
+import com.labcloud.common.security.JwtService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

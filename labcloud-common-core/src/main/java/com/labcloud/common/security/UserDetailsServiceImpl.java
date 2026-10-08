@@ -1,4 +1,4 @@
-package com.labcloud.sample.security;
+package com.labcloud.common.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 /**
- * No Sample Service, NÃO temos acesso ao banco de usuários.
+ * Stub de UserDetailsService.
  * 
- * O UserDetailsServiceImpl apenas cria um UserDetails "stub" com base no email
- * extraído do JWT. A validação real é feita pelo JwtAuthenticationFilter.
+ * A validação real do usuário é feita pelo Auth Service. Este service apenas
+ * cria um UserDetails mínimo com o email do JWT.
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

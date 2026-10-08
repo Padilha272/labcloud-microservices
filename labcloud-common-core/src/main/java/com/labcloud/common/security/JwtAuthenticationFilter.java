@@ -1,4 +1,4 @@
-package com.labcloud.auth.security;
+package com.labcloud.common.security;
 
 import java.io.IOException;
 

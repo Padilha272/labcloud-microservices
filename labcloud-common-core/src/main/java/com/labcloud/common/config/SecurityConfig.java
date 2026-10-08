@@ -1,6 +1,6 @@
-package com.labcloud.result.security;
+package com.labcloud.common.config;
 
-
+import com.labcloud.common.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

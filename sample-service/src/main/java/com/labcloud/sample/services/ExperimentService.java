@@ -70,7 +70,12 @@ public class ExperimentService {
 
         return experimentMapper.toResponse(experiment);
 
+    }
 
+    @Transactional(readOnly = true)
+    public List<ExperimentResponse> findAll() {
+        log.info("Buscando todos os experimentos");
+        return experimentRepository.findAll().stream().map(experimentMapper::toResponse).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -83,31 +88,26 @@ public class ExperimentService {
         return experimentMapper.toResponse(experiment);
     }
 
-
     @Transactional(readOnly = true)
     public List<ExperimentResponse> findByTenantId(String tenantId) {
         log.info("Buscando experimentos do TenantId: {}", tenantId);
-        
-        return experimentRepository.findByTenantId(tenantId).stream()
-                .map(experimentMapper::toResponse)
+
+        return experimentRepository.findByTenantId(tenantId).stream().map(experimentMapper::toResponse)
                 .collect(Collectors.toList());
     }
-
 
     @Transactional(readOnly = true)
     public Page<ExperimentResponse> findByTenantIdPaged(String tenantId, Pageable pageable) {
         log.info("Buscando experimentos do tenant com paginação: {}", tenantId);
 
-        return experimentRepository.findByTenantId(tenantId, pageable)
-                .map(experimentMapper::toResponse);
+        return experimentRepository.findByTenantId(tenantId, pageable).map(experimentMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
     public List<ExperimentResponse> findByLaboratory(String laboratoryId) {
         log.info("Buscando experimentos do laboratório: {}", laboratoryId);
 
-        return experimentRepository.findByLaboratoryId(laboratoryId).stream()
-                .map(experimentMapper::toResponse)
+        return experimentRepository.findByLaboratoryId(laboratoryId).stream().map(experimentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -115,8 +115,7 @@ public class ExperimentService {
     public List<ExperimentResponse> findByStatus(String tenantId, ExperimentStatus status) {
         log.info("Buscando experimentos por status: {} no tenant: {}", status, tenantId);
 
-        return experimentRepository.findByTenantIdAndStatus(tenantId, status).stream()
-                .map(experimentMapper::toResponse)
+        return experimentRepository.findByTenantIdAndStatus(tenantId, status).stream().map(experimentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -124,12 +123,11 @@ public class ExperimentService {
     public List<ExperimentResponse> findActive(String tenantId) {
         log.info("Buscando experimentos ativos no tenant: {}", tenantId);
 
-        return experimentRepository.findActiveExperiments(tenantId).stream()
-                .map(experimentMapper::toResponse)
+        return experimentRepository.findActiveExperiments(tenantId).stream().map(experimentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    //Update
+    // Update
     @Transactional
     public ExperimentResponse update(String id, ExperimentRequest request) {
         log.info("Atualizando experimento: {}", id);
@@ -138,8 +136,7 @@ public class ExperimentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Experimento", "ID", id));
 
         // Se laboratoryId mudou, atualizar dados do lab
-        if (request.getLaboratoryId() != null &&
-                !experiment.getLaboratoryId().equals(request.getLaboratoryId())) {
+        if (request.getLaboratoryId() != null && !experiment.getLaboratoryId().equals(request.getLaboratoryId())) {
 
             LaboratoryClientResponse laboratory = fetchLaboratory(request.getLaboratoryId());
             experiment.setLaboratoryId(request.getLaboratoryId());
@@ -155,7 +152,7 @@ public class ExperimentService {
         return experimentMapper.toResponse(updated);
     }
 
-    //Acões de negócio
+    // Acões de negócio
     @Transactional
     public ExperimentResponse activate(String id) {
         log.info("Ativando experimento: {}", id);
@@ -195,7 +192,7 @@ public class ExperimentService {
         return experimentMapper.toResponse(updated);
     }
 
-    //Delete
+    // Delete
     @Transactional
     public void delete(String id) {
         log.info("Deletando experimento: {}", id);
@@ -207,8 +204,6 @@ public class ExperimentService {
         experimentRepository.deleteById(id);
         log.info("Experimento deletado: {}", id);
     }
-
-
 
     // Métodos auxiliáres (Feign)
     private LaboratoryClientResponse fetchLaboratory(String laboratoryId) {

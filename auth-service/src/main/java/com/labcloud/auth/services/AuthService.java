@@ -17,8 +17,9 @@ import com.labcloud.auth.models.Laboratory;
 import com.labcloud.auth.models.User;
 import com.labcloud.auth.repositories.LaboratoryRepository;
 import com.labcloud.auth.repositories.UserRepository;
-import com.labcloud.auth.security.JwtService;
+
 import com.labcloud.auth.util.SlugUtils;
+import com.labcloud.common.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

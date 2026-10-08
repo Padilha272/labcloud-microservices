@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.labcloud.sample.security.SecurityUtils;
+import com.labcloud.common.security.SecurityUtils;
 import com.labcloud.sample.dto.request.ExperimentRequest;
 import com.labcloud.sample.dto.response.ExperimentResponse;
 import com.labcloud.sample.enums.ExperimentStatus;
@@ -27,35 +27,41 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j 
+@Slf4j
 @RestController
 @RequestMapping("/api/experiments")
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class ExperimentController {
     private final ExperimentService experimentService;
 
-    //Criar o experimento
-    @PostMapping 
-    public ResponseEntity<ExperimentResponse> create (@Valid @RequestBody ExperimentRequest request) {
+    // Criar o experimento
+    @PostMapping
+    public ResponseEntity<ExperimentResponse> create(@Valid @RequestBody ExperimentRequest request) {
 
         log.info("POST /api/experiments - Criando experimento: {}", request.getName());
 
-        //Pega o userId do JWT (via SecurityUtils)
+        // Pega o userId do JWT (via SecurityUtils)
         String userId = SecurityUtils.getCurrentUserId();
 
         ExperimentResponse response = experimentService.create(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //Buscar
+    // Buscar
     @GetMapping("/{id}")
-    public ResponseEntity<ExperimentResponse> findById (@PathVariable String id){
-        log.info("Buscando experimento por id",id);
+    public ResponseEntity<ExperimentResponse> findById(@PathVariable String id) {
+        log.info("Buscando experimento por id", id);
 
         ExperimentResponse response = experimentService.findById(id);
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ExperimentResponse>> findAll() {
+        log.info("GET /api/experiments - Buscando todos os experimentos");
+        List<ExperimentResponse> responses = experimentService.findAll();
+        return ResponseEntity.ok(responses);
+    }
 
     @GetMapping("/{id}/details")
     public ResponseEntity<ExperimentResponse> findByIdWithSamples(@PathVariable String id) {
@@ -72,8 +78,7 @@ public class ExperimentController {
     }
 
     @GetMapping("/tenant/{tenantId}/paged")
-    public ResponseEntity<Page<ExperimentResponse>> findByTenantIdPaged(
-            @PathVariable String tenantId,
+    public ResponseEntity<Page<ExperimentResponse>> findByTenantIdPaged(@PathVariable String tenantId,
             @PageableDefault(size = 20) Pageable pageable) {
         log.info("GET /api/experiments/tenant/{}/paged - Buscando com paginação", tenantId);
         Page<ExperimentResponse> responses = experimentService.findByTenantIdPaged(tenantId, pageable);
@@ -88,8 +93,7 @@ public class ExperimentController {
     }
 
     @GetMapping("/tenant/{tenantId}/status/{status}")
-    public ResponseEntity<List<ExperimentResponse>> findByStatus(
-            @PathVariable String tenantId,
+    public ResponseEntity<List<ExperimentResponse>> findByStatus(@PathVariable String tenantId,
             @PathVariable ExperimentStatus status) {
         log.info("GET /api/experiments/tenant/{}/status/{} - Buscando por status", tenantId, status);
         List<ExperimentResponse> responses = experimentService.findByStatus(tenantId, status);
@@ -103,18 +107,16 @@ public class ExperimentController {
         return ResponseEntity.ok(responses);
     }
 
-
-     //Atualizar
+    // Atualizar
     @PutMapping("/{id}")
-    public ResponseEntity<ExperimentResponse> update(
-            @PathVariable String id,
+    public ResponseEntity<ExperimentResponse> update(@PathVariable String id,
             @Valid @RequestBody ExperimentRequest request) {
         log.info("PUT /api/experiments/{} - Atualizando", id);
         ExperimentResponse response = experimentService.update(id, request);
         return ResponseEntity.ok(response);
     }
 
-    //Ações de negócio
+    // Ações de negócio
     @PatchMapping("/{id}/activate")
     public ResponseEntity<ExperimentResponse> activate(@PathVariable String id) {
         log.info("PATCH /api/experiments/{}/activate - Ativando", id);
@@ -136,17 +138,12 @@ public class ExperimentController {
         return ResponseEntity.ok(response);
     }
 
-    //Deletar
+    // Deletar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         log.info("DELETE /api/experiments/{} - Deletando", id);
         experimentService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
 
 }

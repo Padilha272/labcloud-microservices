@@ -1,4 +1,4 @@
-package com.labcloud.result.security;
+package com.labcloud.common.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

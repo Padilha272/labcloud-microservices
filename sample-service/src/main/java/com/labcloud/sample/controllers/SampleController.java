@@ -1,6 +1,5 @@
 package com.labcloud.sample.controllers;
 
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -17,35 +16,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.labcloud.common.security.SecurityUtils;
 import com.labcloud.sample.dto.request.SampleRequest;
 import com.labcloud.sample.dto.response.SampleResponse;
-import com.labcloud.sample.security.SecurityUtils;
+import com.labcloud.sample.models.Sample;
 import com.labcloud.sample.services.SampleService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@RestController 
+@RestController
 @RequestMapping("/api/samples")
-@RequiredArgsConstructor 
-@Slf4j 
+@RequiredArgsConstructor
+@Slf4j
 public class SampleController {
 
     private final SampleService sampleService;
 
-    @PostMapping 
-    public ResponseEntity<SampleResponse> create (@Valid @RequestBody SampleRequest request) {
-        log.info("Criando a amostra: {}",request.getName());
-        
-        //Pegar o userId do JWT
+    @PostMapping
+    public ResponseEntity<SampleResponse> create(@Valid @RequestBody SampleRequest request) {
+        log.info("Criando a amostra: {}", request.getName());
+
+        // Pegar o userId do JWT
         String userId = SecurityUtils.getCurrentUserId();
         SampleResponse response = sampleService.create(request, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //Buscar
+    // Buscar
+    @GetMapping
+    public ResponseEntity<List<SampleResponse>> findAll() {
+        log.info("GET /api/samples - Buscando todas as amostras");
+        List<SampleResponse> responses = sampleService.findAll();
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SampleResponse> findById(@PathVariable String id) {
         log.info("GET /api/samples/{} - Buscando por ID", id);
@@ -68,8 +76,7 @@ public class SampleController {
     }
 
     @GetMapping("/tenant/{tenantId}/paged")
-    public ResponseEntity<Page<SampleResponse>> findByTenantIdPaged(
-            @PathVariable String tenantId,
+    public ResponseEntity<Page<SampleResponse>> findByTenantIdPaged(@PathVariable String tenantId,
             @PageableDefault(size = 20) Pageable pageable) {
         log.info("GET /api/samples/tenant/{}/paged - Buscando com paginação", tenantId);
         Page<SampleResponse> responses = sampleService.findByTenantIdPaged(tenantId, pageable);
@@ -84,8 +91,7 @@ public class SampleController {
     }
 
     @GetMapping("/experiment/{experimentId}/paged")
-    public ResponseEntity<Page<SampleResponse>> findByExperimentPaged(
-            @PathVariable String experimentId,
+    public ResponseEntity<Page<SampleResponse>> findByExperimentPaged(@PathVariable String experimentId,
             @PageableDefault(size = 20) Pageable pageable) {
         log.info("GET /api/samples/experiment/{}/paged - Buscando com paginação", experimentId);
         Page<SampleResponse> responses = sampleService.findByExperimentPaged(experimentId, pageable);
@@ -93,31 +99,26 @@ public class SampleController {
     }
 
     @GetMapping("/tenant/{tenantId}/type/{type}")
-    public ResponseEntity<List<SampleResponse>> findByType(
-            @PathVariable String tenantId,
-            @PathVariable String type) {
+    public ResponseEntity<List<SampleResponse>> findByType(@PathVariable String tenantId, @PathVariable String type) {
         log.info("GET /api/samples/tenant/{}/type/{} - Buscando por tipo", tenantId, type);
         List<SampleResponse> responses = sampleService.findByType(tenantId, type);
         return ResponseEntity.ok(responses);
     }
 
-    //Atualizar
+    // Atualizar
     @PutMapping("/{id}")
-    public ResponseEntity<SampleResponse> update(
-            @PathVariable String id,
-            @Valid @RequestBody SampleRequest request) {
+    public ResponseEntity<SampleResponse> update(@PathVariable String id, @Valid @RequestBody SampleRequest request) {
         log.info("PUT /api/samples/{} - Atualizando", id);
         SampleResponse response = sampleService.update(id, request);
         return ResponseEntity.ok(response);
     }
 
-    //Deletar
+    // Deletar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         log.info("DELETE /api/samples/{} - Deletando", id);
         sampleService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

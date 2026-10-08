@@ -30,7 +30,7 @@ public class SampleService {
     private final SampleMapper sampleMapper;
     private final AuthClient authClient;
 
-    //Create
+    // Create
     @Transactional
     public SampleResponse create(SampleRequest request, String userId) {
         log.info("Criando nova amostra: {}", request.getName());
@@ -56,7 +56,7 @@ public class SampleService {
         return sampleMapper.toResponse(saved);
     }
 
-    //Find
+    // Find
     @Transactional(readOnly = true)
     public SampleResponse findById(String id) {
         log.info("Buscando amostra por ID: {}", id);
@@ -65,6 +65,12 @@ public class SampleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Amostra", "ID", id));
 
         return sampleMapper.toResponse(sample);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SampleResponse> findAll() {
+        log.info("Buscando todas as amostras");
+        return sampleRepository.findAll().stream().map(sampleMapper::toResponse).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -81,8 +87,7 @@ public class SampleService {
     public List<SampleResponse> findByTenantId(String tenantId) {
         log.info("Buscando amostras do tenant: {}", tenantId);
 
-        return sampleRepository.findByTenantId(tenantId).stream()
-                .map(sampleMapper::toResponse)
+        return sampleRepository.findByTenantId(tenantId).stream().map(sampleMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -90,16 +95,14 @@ public class SampleService {
     public Page<SampleResponse> findByTenantIdPaged(String tenantId, Pageable pageable) {
         log.info("Buscando amostras do tenant com paginação: {}", tenantId);
 
-        return sampleRepository.findByTenantId(tenantId, pageable)
-                .map(sampleMapper::toResponse);
+        return sampleRepository.findByTenantId(tenantId, pageable).map(sampleMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
     public List<SampleResponse> findByExperiment(String experimentId) {
         log.info("Buscando amostras do experimento: {}", experimentId);
 
-        return sampleRepository.findByExperimentId(experimentId).stream()
-                .map(sampleMapper::toResponse)
+        return sampleRepository.findByExperimentId(experimentId).stream().map(sampleMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -107,20 +110,18 @@ public class SampleService {
     public Page<SampleResponse> findByExperimentPaged(String experimentId, Pageable pageable) {
         log.info("Buscando amostras do experimento com paginação: {}", experimentId);
 
-        return sampleRepository.findByExperimentId(experimentId, pageable)
-                .map(sampleMapper::toResponse);
+        return sampleRepository.findByExperimentId(experimentId, pageable).map(sampleMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
     public List<SampleResponse> findByType(String tenantId, String type) {
         log.info("Buscando amostras por tipo: {} no tenant: {}", type, tenantId);
 
-        return sampleRepository.findByTenantIdAndType(tenantId, type).stream()
-                .map(sampleMapper::toResponse)
+        return sampleRepository.findByTenantIdAndType(tenantId, type).stream().map(sampleMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    //Update
+    // Update
     @Transactional
     public SampleResponse update(String id, SampleRequest request) {
         log.info("Atualizando amostra: {}", id);
@@ -129,8 +130,7 @@ public class SampleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Amostra", "ID", id));
 
         // Se experimentId mudou, atualizar
-        if (request.getExperimentId() != null &&
-                !sample.getExperiment().getId().equals(request.getExperimentId())) {
+        if (request.getExperimentId() != null && !sample.getExperiment().getId().equals(request.getExperimentId())) {
 
             Experiment experiment = experimentRepository.findById(request.getExperimentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Experimento", "ID", request.getExperimentId()));
@@ -146,7 +146,7 @@ public class SampleService {
         return sampleMapper.toResponse(updated);
     }
 
-    //Delete
+    // Delete
     @Transactional
     public void delete(String id) {
         log.info("Deletando amostra: {}", id);
@@ -159,7 +159,7 @@ public class SampleService {
         log.info("Amostra deletada: {}", id);
     }
 
-    //Metodo auxiliar (Feign)
+    // Metodo auxiliar (Feign)
     private UserClientResponse fetchUser(String userId) {
         try {
             log.debug("Buscando usuário via Feign: {}", userId);
