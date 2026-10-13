@@ -37,6 +37,11 @@ public class Laboratory {
     @ToString.Include
     private String name;
 
+    @Column(unique = true, length = 10)
+    @ToString.Include
+    @Setter(AccessLevel.NONE)
+    private String inviteCode;
+
     @Column(length = 255)
     private String description;
 
@@ -75,6 +80,13 @@ public class Laboratory {
         }
 
         this.tenantId = newTenantId;
+    }
+
+    public void updateInviteCode(String newInviteCode) {
+        if (newInviteCode == null || newInviteCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invite code não pode ser vazio");
+        }
+        this.inviteCode = newInviteCode;
     }
 
 }

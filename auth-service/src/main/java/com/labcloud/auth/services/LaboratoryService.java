@@ -14,27 +14,28 @@ import com.labcloud.auth.mappers.LaboratoryMapper;
 import com.labcloud.auth.models.Laboratory;
 import com.labcloud.auth.repositories.LaboratoryRepository;
 import com.labcloud.auth.util.SlugUtils;
-
+import com.labcloud.auth.exception.UnauthorizedException;
+import com.labcloud.common.security.SecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j 
-@RequiredArgsConstructor 
+@Slf4j
+@RequiredArgsConstructor
 public class LaboratoryService {
 
     private final LaboratoryRepository laboratoryRepository;
     private final LaboratoryMapper laboratoryMapper;
 
-    @Transactional 
-    public LaboratoryResponse create (LaboratoryRequest request){
+    @Transactional
+    public LaboratoryResponse create(LaboratoryRequest request) {
         log.info("Criando novo laboratório {}", request.getName());
 
         String tenantId = generateTenantId(request.getName());
 
         if (laboratoryRepository.existsByTenantId(tenantId)) {
-            throw new DuplicateResourceException("Laboratório","tenantId",tenantId);
+            throw new DuplicateResourceException("Laboratório", "tenantId", tenantId);
         }
 
         Laboratory laboratory = laboratoryMapper.toEntity(request);
@@ -42,31 +43,54 @@ public class LaboratoryService {
         laboratory.setActive(true);
 
         Laboratory saved = laboratoryRepository.save(laboratory);
-        log.info("Laboratório criado com sucesso {} - {}",saved.getId(), saved.getName());
+        log.info("Laboratório criado com sucesso {} - {}", saved.getId(), saved.getName());
 
         return laboratoryMapper.toResponse(saved);
-       
-        
+
+    }
+
+    // Get Invite Code
+    @Transactional(readOnly = true)
+    public String getInviteCode(String laboratoryId) {
+        log.info("Buscando código de convite do lab: {}", laboratoryId);
+
+        // 1. Verificar role (defesa em profundidade — @PreAuthorize já faz isso, mas
+        // reforçamos)
+        String currentRole = SecurityUtils.getCurrentUserRole();
+        if (!"ADMIN".equals(currentRole)) {
+            throw new UnauthorizedException("Apenas administradores podem ver o código de convite");
+        }
+
+        // 2. Buscar lab
+        Laboratory laboratory = laboratoryRepository.findById(laboratoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Laboratório", "ID", laboratoryId));
+
+        // 3. Verificar se o admin pertence ao MESMO lab
+        String currentTenantId = SecurityUtils.getCurrentTenantId();
+        if (!laboratory.getTenantId().equals(currentTenantId)) {
+            throw new UnauthorizedException("Você não tem acesso a este laboratório");
+        }
+
+        return laboratory.getInviteCode();
     }
 
     @Transactional(readOnly = true)
-    public LaboratoryResponse findById(String id){
-        log.info("Procurando Laboratório pelo Id: {}",id);
+    public LaboratoryResponse findById(String id) {
+        log.info("Procurando Laboratório pelo Id: {}", id);
 
-       Laboratory Laboratory = laboratoryRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Laboratório","Id",id));
+        Laboratory Laboratory = laboratoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Laboratório", "Id", id));
 
         return laboratoryMapper.toResponse(Laboratory);
     }
 
-
     @Transactional(readOnly = true)
     public LaboratoryResponse findByTenantId(String tenantId) {
-        log.info("Procurando o laboratório pelo Tenant ID: {}",tenantId);
+        log.info("Procurando o laboratório pelo Tenant ID: {}", tenantId);
 
         Laboratory laboratory = laboratoryRepository.findByTenantId(tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Laboratório","TenantId",tenantId));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Laboratório", "TenantId", tenantId));
+
         return laboratoryMapper.toResponse(laboratory);
     }
 
@@ -74,71 +98,63 @@ public class LaboratoryService {
     public List<LaboratoryResponse> findAll() {
         log.info("Buscando todos os laboratórios");
 
-        return laboratoryRepository.findAll().stream()
-                .map(laboratoryMapper::toResponse)
-                .collect(Collectors.toList());
+        return laboratoryRepository.findAll().stream().map(laboratoryMapper::toResponse).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LaboratoryResponse> findActive() {
         log.info("Buscando todos os laboratórios ativos");
 
-        return laboratoryRepository.findByActiveTrue().stream()
-                .map(laboratoryMapper::toResponse)
+        return laboratoryRepository.findByActiveTrue().stream().map(laboratoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    @Transactional 
-    public LaboratoryResponse update(String id, LaboratoryRequest request){
+    @Transactional
+    public LaboratoryResponse update(String id, LaboratoryRequest request) {
         log.info("Atualizando laboratório: {}", id);
 
-
         Laboratory laboratory = laboratoryRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Laboratório","Id",id));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Laboratório", "Id", id));
+
         laboratoryMapper.updateEntity(request, laboratory);
 
         Laboratory updated = laboratoryRepository.save(laboratory);
-            log.info("Laboratório atualizado com sucesso: {}",id);
-        
+        log.info("Laboratório atualizado com sucesso: {}", id);
+
         return laboratoryMapper.toResponse(updated);
 
     }
 
-    @Transactional 
-    public void delete (String id) {
-        log.info("Desativando o laboratório : {}",id);
+    @Transactional
+    public void delete(String id) {
+        log.info("Desativando o laboratório : {}", id);
 
-    
         Laboratory laboratory = laboratoryRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Laboratório","Id",id));
+                .orElseThrow(() -> new ResourceNotFoundException("Laboratório", "Id", id));
 
         laboratory.setActive(false);
         laboratoryRepository.save(laboratory);
-        
-        log.info("Laboratório desativado: {}",id);
-    
+
+        log.info("Laboratório desativado: {}", id);
+
     }
 
     @Transactional
-    public void hardDelete (String id){
+    public void hardDelete(String id) {
         log.info("Deletando o Laboratório permanentemente: {}");
 
-        if (!laboratoryRepository.existsById(id)){
+        if (!laboratoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Laboratório", "ID", id);
         }
-        
+
         laboratoryRepository.deleteById(id);
-        log.info("Laboratório removido permanentemente: {}",id);
+        log.info("Laboratório removido permanentemente: {}", id);
 
     }
-    
 
-
-    //Método auxiliar
+    // Método auxiliar
 
     private String generateTenantId(String name) {
-
 
         String base = SlugUtils.generateSlug(name);
         String tenantId = base;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.labcloud.auth.dto.request.AuthRequest;
+import com.labcloud.auth.dto.request.JoinRequest;
 import com.labcloud.auth.dto.request.RegisterRequest;
 import com.labcloud.auth.dto.response.AuthResponse;
 import com.labcloud.auth.services.AuthService;
@@ -41,6 +42,13 @@ public class AuthController {
         log.info("Post /api/auth/register - Registrando: {}",request.getEmail());
 
         AuthResponse response = authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<AuthResponse> join(@Valid @RequestBody JoinRequest request) {
+        log.info("POST /api/auth/join - Entrando: {}", request.getEmail());
+        AuthResponse response = authService.join(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

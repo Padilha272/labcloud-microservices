@@ -22,6 +22,10 @@ public interface LaboratoryRepository extends JpaRepository<Laboratory, String> 
 
     boolean existsByTenantId(String tenantId);
 
+    // Código de invite
+    Optional<Laboratory> findByInviteCode(String inviteCode);
+    boolean existsByInviteCode(String inviteCode);
+
     // Busca com relacionamento
     @Query("SELECT l FROM Laboratory l LEFT JOIN FETCH l.users WHERE l.id = :id")
     Optional<Laboratory> findByIdWithUsers(@Param("id") String id);

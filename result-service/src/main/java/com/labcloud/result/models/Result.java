@@ -49,7 +49,7 @@ public class Result {
     @ToString.Include
     private String parameter;
 
-    @Column(nullable = false)
+    @Column(name = "\"value\"", nullable = false)
     @ToString.Include
     private String value;
 

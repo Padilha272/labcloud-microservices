@@ -1,9 +1,11 @@
 package com.labcloud.auth.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,15 @@ public class LaboratoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // Get Invite Code (apenas ADMIN) 
+    @GetMapping("/{id}/invite-code")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> getInviteCode(@PathVariable String id) {
+        log.info("GET /api/laboratories/{}/invite-code - Buscando código", id);
+        String code = laboratoryService.getInviteCode(id);
+        return ResponseEntity.ok(Map.of("inviteCode", code));
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<LaboratoryResponse> findById (@PathVariable String id){
         log.info("GET /api/laboratories/{} - Buscando por ID", id);

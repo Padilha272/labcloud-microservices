@@ -18,6 +18,6 @@ public class UserClientResponse {
     private String email;
     private String role;
     private String tenantId;
-    private String active;
+    private boolean active;
 
 }

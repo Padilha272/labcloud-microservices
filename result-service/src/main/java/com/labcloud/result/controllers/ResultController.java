@@ -54,6 +54,14 @@ public class ResultController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ResultResponse>> findAll() {
+        log.info("GET /api/results - Buscando todos os resultados");
+        List<ResultResponse> responses = resultService.findAll();
+        return ResponseEntity.ok(responses);
+    }
+
+
     @GetMapping("/tenant/{tenantId}")
     public ResponseEntity<List<ResultResponse>> findByTenantId(@PathVariable String tenantId) {
         log.info("GET /api/results/tenant/{} - Buscando por tenant", tenantId);

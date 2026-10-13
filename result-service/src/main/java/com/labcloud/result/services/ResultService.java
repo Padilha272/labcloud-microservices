@@ -76,6 +76,15 @@ public class ResultService {
     }
 
     @Transactional(readOnly = true)
+    public List<ResultResponse> findAll() {
+        log.info("Buscando todos os resultados");
+        return resultRepository.findAll()
+                .stream()
+                .map(resultMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ResultResponse> findByTenantId(String tenantId) {
         log.info("Buscando os resultados do tenant: {}", tenantId);
         return resultRepository.findByTenantId(tenantId).stream().map(resultMapper::toResponse)
